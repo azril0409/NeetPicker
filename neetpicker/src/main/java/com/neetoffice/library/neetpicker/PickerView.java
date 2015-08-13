@@ -105,6 +105,7 @@ public class PickerView extends ScrollView {
     }
 
     public void setTexts(Collection<String> texts) {
+        index = 0;
         textLayout.texts = new ArrayList<>(texts);
         invalidate();
     }
