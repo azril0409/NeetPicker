@@ -1,0 +1,30 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "23.0.0 rc3"
+
+    defaultConfig {
+        minSdkVersion 11
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+    }
+}
+
+dependencies {
+}
+
+def libname = 'NeetPicker.aar'
+task clearAar(type: Delete) {
+    delete '../library/'
+}
+
+task makeAar(type: Copy) {
+    from('build/outputs/aar/')
+    into('../library/')
+    include('neetpicker-release.aar')
+    rename ('neetpicker-release.aar',libname)
+}
+
+makeAar.dependsOn(clearAar, build)
