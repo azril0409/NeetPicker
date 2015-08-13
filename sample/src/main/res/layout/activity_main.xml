@@ -12,7 +12,7 @@
     <com.neetoffice.library.neetpicker.PickerView
         android:id="@+id/pickerView"
         app:neet_pickerview_linewidth="2dp"
-        app:neet_pickerview_texts="@array/texts"
+        app:neet_pickerview_texts="@array/list1"
         app:neet_pickerview_textsize="24sp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

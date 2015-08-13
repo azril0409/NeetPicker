@@ -100,14 +100,22 @@ public class PickerView extends ScrollView {
         addView(textLayout, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
     }
 
-    public int getIndex() {
+    public int getSelected() {
         return index;
+    }
+
+    public void setSelect(int index) {
+        this.index = index;
+        smoothScrollTo(0, (int) (index * itemHeight));
     }
 
     public void setTexts(Collection<String> texts) {
         index = 0;
+        scrollTo(0, 0);
+        removeAllViews();
+        textLayout = new TextLayout(getContext());
         textLayout.texts = new ArrayList<>(texts);
-        invalidate();
+        addView(textLayout, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
     }
 
     public void setOnPickerSelectListener(OnPickerSelectListener onPickerSelectListener) {
@@ -128,7 +136,7 @@ public class PickerView extends ScrollView {
     private void startScrollerTask() {
         initialY = getScrollY();
         lock = true;
-        new Task().start();
+        postDelayed(task,50);
     }
 
     @Override
@@ -145,34 +153,27 @@ public class PickerView extends ScrollView {
         canvas.drawLine(startX, y + itemHeight, stopX, y + itemHeight, linePaint);
     }
 
-    private class Task extends Thread {
+    private final Runnable task = new Runnable() {
         @Override
         public void run() {
-            while (lock) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            int newY = getScrollY();
+            if (initialY - newY == 0) {//has stopped
+                index = (int) (newY / itemHeight);
+                int toy;
+                if ((newY / itemHeight * 10) % 10 > 5) {
+                    index++;
                 }
-                int newY = getScrollY();
-                if (initialY - newY == 0) {//has stopped
-                    index = (int) (newY / itemHeight);
-                    int toy;
-                    if ((newY / itemHeight * 10) % 10 > 5) {
-                        index++;
-                    }
-                    toy = (int) (index * itemHeight);
-                    smoothScrollTo(0, toy);
-                    if (onPickerSelectListener != null) {
-                        post(postListener);
-                    }
-                    lock = false;
-                } else {
-                    initialY = getScrollY();
+                toy = (int) (index * itemHeight);
+                smoothScrollTo(0, toy);
+                if (onPickerSelectListener != null) {
+                    post(postListener);
                 }
+                lock = false;
+            } else {
+                startScrollerTask();
             }
         }
-    }
+    };
 
     private final Runnable postListener = new Runnable() {
         @Override
