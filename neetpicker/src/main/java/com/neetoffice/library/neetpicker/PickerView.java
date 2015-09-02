@@ -36,6 +36,7 @@ public class PickerView extends ScrollView {
     private float centerY;
     private int initialY;
     private int mainColor;
+    private int secondColor;
     private int color;
     private int index = 0;
     private OnPickerSelectListener onPickerSelectListener;
@@ -71,14 +72,15 @@ public class PickerView extends ScrollView {
             textSzie = a.getDimensionPixelSize(R.styleable.PickerView_neet_pickerview_textsize, textSzie);
             lineWidth = a.getDimensionPixelSize(R.styleable.PickerView_neet_pickerview_linewidth, lineWidth);
             mainColor = a.getColor(R.styleable.PickerView_neet_pickerview_maincolor, Color.parseColor("#0288ce"));
+            secondColor = a.getColor(R.styleable.PickerView_neet_pickerview_secondcolor, Color.parseColor("#aaaaaa"));
         } else {
             mainColor = Color.parseColor("#0288ce");
+            secondColor = Color.parseColor("#aaaaaa");
         }
         color = Color.argb(0, Color.red(mainColor), Color.green(mainColor), Color.blue(mainColor));
         {
             Rect bounds = new Rect();
             mainPaint = new Paint();
-            mainPaint.setColor(mainColor);
             mainPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, textSzie, getResources().getDisplayMetrics()));
             mainPaint.getTextBounds("A", 0, "A".length(), bounds);
             itemHeight = bounds.height() + verticalPadding * 2;
@@ -175,6 +177,14 @@ public class PickerView extends ScrollView {
         }
     };
 
+    @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        super.onScrollChanged(l, t, oldl, oldt);
+        int newY = getScrollY();
+        index = (int) (newY / itemHeight);
+        textLayout.invalidate();
+    }
+
     private final Runnable postListener = new Runnable() {
         @Override
         public void run() {
@@ -201,7 +211,13 @@ public class PickerView extends ScrollView {
             for (int i = 0; i < texts.size(); i++) {
                 Rect bounds = new Rect();
                 mainPaint.getTextBounds(texts.get(i), 0, texts.get(i).length(), bounds);
-                canvas.drawText(texts.get(i), width / 2f - centerX, itemHeight * (i + 1) + top - centerY, mainPaint);
+                if(index==i){
+                    mainPaint.setColor(mainColor);
+                }else {
+                    mainPaint.setColor(secondColor);
+                }
+                canvas.drawText(texts.get(i), width / 2f - centerX-bounds.width()/2, itemHeight * (i + 1) + top - centerY, mainPaint);
+
             }
         }
 

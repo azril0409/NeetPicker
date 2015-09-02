@@ -5,4 +5,5 @@
         <attr name="neet_pickerview_textsize" format="dimension|reference"/>
         <attr name="neet_pickerview_linewidth" format="dimension|reference"/>
         <attr name="neet_pickerview_maincolor" format="color|reference"/>
+        <attr name="neet_pickerview_secondcolor" format="color|reference"/>
     </declare-styleable></resources>

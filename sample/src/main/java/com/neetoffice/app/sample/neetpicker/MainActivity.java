@@ -44,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements OnPickerSelectLis
             case R.id.menu2:
                 pickerView.setTexts(Arrays.asList(getResources().getStringArray(R.array.list2)));
                 return true;
+            case R.id.menu3:
+                pickerView.setTexts(Arrays.asList(getResources().getStringArray(R.array.dates)));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
